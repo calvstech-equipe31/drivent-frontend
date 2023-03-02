@@ -5,6 +5,8 @@ export const useForm = (options) => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (key, sanitizeFn) => (e) => {
+    console.log(key);
+    console.log(sanitizeFn);
     const value = sanitizeFn ? sanitizeFn(e.target.value) : e.target.value;
 
     setData({
