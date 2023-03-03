@@ -4,15 +4,21 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 export default function Tickets() {
-  const [tickets, setTickets] = useState([{ id: 1, name: 'online', price: '100', isRemote: true }, { id: 2, name: 'presencial', price: '250', isRemote: false }]);
+  const [tickets, setTickets] = useState([{ id: 2, name: 'Online', price: '100', isRemote: true, includesHotel: false }, { id: 4, name: 'Presencial', price: '250', isRemote: false, includesHotel: false }, { id: 5, name: 'Presencial', price: '600', isRemote: false, includesHotel: true }]);
   const [ticketSelected, setTicketSelected] = useState({});
   const [type, setType] = useState(''); 
-  const [modality, setModality] = useState('');
+  const [isRemote, setIsRemote] = useState(true);
+  const [modality, setModality] = useState({});
   const [result, setResult] = useState(false);
   const [total, setTotal] = useState(0);
-  const [sum, setSum] = useState(0);
+  //const [sum, setSum] = useState(0);
   const { saveTicketLoading, saveTicket } = useSaveTicket();
-  const hotelPrice = 350;
+  //const hotelPrice = 350;
+
+  const filterTickets = tickets.filter(e => (e.includesHotel===false));
+  const filterTicketPresential = tickets.filter(e => (e.isRemote===false));
+  const hotelPriceNegative = Number(filterTicketPresential[0].price)-Number(filterTicketPresential[1].price);
+  const hotelPrice = Math.abs(hotelPriceNegative);
 
   function selectTicketType(ticket) {
     if(ticket.name===type) {
@@ -22,30 +28,39 @@ export default function Tickets() {
     if(ticket.isRemote) {
       setResult(true);
       setTotal(ticket.price);
+      setIsRemote(true);
     }
     if(!ticket.isRemote) {
-      setModality('');
+      setModality({});
       setResult(false);
-      setSum(ticket.price);
+      setIsRemote(false);
+      //setSum(ticket.price);
     }
     setType(ticket.name);
   }
 
-  function selectModality(modality) {
-    if(modality==='hotel') {
-      setModality('hotel');
-      setTotal(Number(sum)+Number(hotelPrice));
+  function selectModality(e) {
+    /*if(e.includesHotel===true) {
+      setModality(e);
+      setTotal(e.price);
+      setTicketSelected(e);
     }
-    if(modality==='noHotel') {
-      setModality('noHotel');
-      setTotal(sum);
-    }
-    if(modality!=='') {
+    if(e.includesHotel===false) {
+      setModality(e);
+      setTotal(e.price);
+      setTicketSelected(e);
+    }*/
+    
+    if(modality!=={}) {
       setResult(true);
     }
+    setModality(e);
+    setTotal(e.price);
+    setTicketSelected(e);
   }
   async function sendTicket() {
     const newData = { ticketTypeId: ticketSelected.id };
+    console.log(newData);
     try {
       await saveTicket(newData);
       toast('Informações salvas com sucesso!');
@@ -57,13 +72,12 @@ export default function Tickets() {
   return (
     <>
       <h1>Primeiro, escolha sua modalidade de ingresso</h1>
-      {tickets?.map((e) => <TicketStyle className={ ticketSelected === e ? 'selected' :'' } onClick={() => selectTicketType(e)}>{e.name}{e.price}</TicketStyle>)}
-      {type==='presencial'? 
+      {filterTickets?.map((e) => <TicketStyle className={ ticketSelected.name === e.name ? 'selected' :'' } onClick={() => selectTicketType(e)}>{e.name}{e.price}</TicketStyle>)}
+      {!isRemote? 
         ( 
           <>
             <h1>Ótimo! Agora escolha sua modalidade de hospedagem</h1>
-            <TicketStyle className={ modality === 'noHotel' ? 'selected' :'' } onClick={() => selectModality('noHotel')}>Sem hotel</TicketStyle>
-            <TicketStyle className={ modality === 'hotel' ? 'selected' :'' } onClick={() => selectModality('hotel')}>`Com hotel ${hotelPrice}` </TicketStyle>
+            {filterTicketPresential?.map((e) => <TicketStyle className={ modality === e ? 'selected' :'' } onClick={() => selectModality(e)}>{e.includesHotel?'Com hotel '+hotelPrice:'sem hotel'}</TicketStyle>)}
           </>
         ) : ''
       }
