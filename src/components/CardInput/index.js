@@ -21,7 +21,7 @@ export default function CardInput() {
   const { handleSubmit, handleChange, data } = useForm({
     onSubmit: async(data) => {
       const newData = {
-        ticketId: 2, //AQUI VAI O TICKET ID
+        ticketId: 3, //AQUI VAI O TICKET ID
         cardData: {
           issuer: Payment.fns.cardType(data.number),
           number: data.number,
@@ -33,6 +33,7 @@ export default function CardInput() {
 
       try {
         await savePayment(newData);
+        setPaid(true);
         toast('Pagamento realizado com sucesso!');
       } catch (err) {
         console.log(err.response);
@@ -46,7 +47,7 @@ export default function CardInput() {
       setPaid(true);
       console.log(payment);
     }
-  }, [payment, savePaymentLoading]);
+  }, [payment]);
 
   return (
     <>
