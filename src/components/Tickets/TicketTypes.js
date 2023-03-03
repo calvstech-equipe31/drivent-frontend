@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import useSaveTicket from '../../hooks/api/useSaveTicket';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 export default function Tickets() {
@@ -9,6 +11,7 @@ export default function Tickets() {
   const [result, setResult] = useState(false);
   const [total, setTotal] = useState(0);
   const [sum, setSum] = useState(0);
+  const { saveTicketLoading, saveTicket } = useSaveTicket();
   const hotelPrice = 350;
 
   function selectTicketType(ticket) {
@@ -41,6 +44,16 @@ export default function Tickets() {
       setResult(true);
     }
   }
+  async function sendTicket() {
+    const newData = { ticketTypeId: ticketSelected.id };
+    try {
+      await saveTicket(newData);
+      toast('Informações salvas com sucesso!');
+    } catch (err) {
+      toast('Não foi possível salvar suas informações!');
+    }
+  }
+
   return (
     <>
       <h1>Primeiro, escolha sua modalidade de ingresso</h1>
@@ -54,7 +67,7 @@ export default function Tickets() {
           </>
         ) : ''
       }
-      {result?<>`Fechado! O total ficou em ${total}. Agora é só confirmar`<Button>Reservar ingresso</Button> </>:''}
+      {result?<>`Fechado! O total ficou em ${total}. Agora é só confirmar`<Button onClick={() => sendTicket()}>Reservar ingresso</Button> </>:''}
     </>
   );
 }
