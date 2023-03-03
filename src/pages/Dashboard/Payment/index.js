@@ -1,5 +1,6 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
+import ConfirmationPayment from '../../../components/Payment/ConfirmationPayment';
 import ReviewTicket from '../../../components/Payment/ReviewTicket';
 import { SUB_TITLE_COLOR } from '../../../constants/colors';
 
@@ -17,6 +18,7 @@ export default function Payment() {
       <StyledTypography variant="h4">Ingresso e Pagamento</StyledTypography>
       <StyledSubTitle variant="h6">Ingresso escolhido</StyledSubTitle>
       <ReviewTicket />
+      <ConfirmationPayment />
     </>
   );
 }
