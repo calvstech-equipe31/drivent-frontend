@@ -1,3 +1,6 @@
+import Tickets from '../../../components/Tickets/TicketTypes.js';
 export default function Payment() {
-  return 'Pagamento: Em breve!';
+  return (
+    <Tickets/>
+  );
 }
