@@ -69,27 +69,31 @@ export default function Tickets() {
   return (
     <>
       <StyledTitle>Primeiro, escolha sua modalidade de ingresso</StyledTitle>
-      {filterTickets?.map((e) => (
-        <TicketStyle className={ticketSelected.name === e.name ? 'selected' : ''} onClick={() => selectTicketType(e)}>
-          <h1>{e.name}</h1>
-          <h2>R$ {e.price}</h2>
-        </TicketStyle>
-      ))}
+      <StyledContainer>
+        {filterTickets?.map((e) => (
+          <TicketStyle className={ticketSelected.name === e.name ? 'selected' : ''} onClick={() => selectTicketType(e)}>
+            <h1>{e.name}</h1>
+            <h2>R$ {e.price}</h2>
+          </TicketStyle>
+        ))}
+      </StyledContainer>
       {!isRemote ? (
         <>
           <StyledTitle>Ótimo! Agora escolha sua modalidade de hospedagem</StyledTitle>
-          {filterTicketPresential?.map((e) => (
-            <TicketStyle className={modality === e ? 'selected' : ''} onClick={() => selectModality(e)}>
-              {e.includesHotel ? (
-                <>
-                  <h1>Com hotel</h1>
-                  <h2>+ R${hotelPrice}</h2>
-                </>
-              ) : (
-                <h1>Sem hotel</h1>
-              )}
-            </TicketStyle>
-          ))}
+          <StyledContainer>
+            {filterTicketPresential?.map((e) => (
+              <TicketStyle className={modality === e ? 'selected' : ''} onClick={() => selectModality(e)}>
+                {e.includesHotel ? (
+                  <>
+                    <h1>Com hotel</h1>
+                    <h2>+ R${hotelPrice}</h2>
+                  </>
+                ) : (
+                  <h1>Sem hotel</h1>
+                )}
+              </TicketStyle>
+            ))}
+          </StyledContainer>
         </>
       ) : (
         ''
@@ -130,6 +134,11 @@ const TicketStyle = styled.div`
   h2 {
     color: #cecece;
   }
+`;
+
+const StyledContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const Button = styled.div`
