@@ -10,8 +10,12 @@ export async function save(body, token) {
   return response.data;
 }
 
-export async function getTicketTypes() {
-  const response = await api.get('/auth/types');
+export async function ticketTypes(token) {
+  const response = await api.get('/tickets/types', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
   return response.data;
 }
-//
