@@ -16,6 +16,16 @@ export async function ticketTypes(token) {
       Authorization: `Bearer ${token}`,
     },
   });
-  
+
+  return response.data;
+}
+
+export async function ticketUser(token) {
+  const response = await api.get('/tickets', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   return response.data;
 }
