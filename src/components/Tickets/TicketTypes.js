@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import useTicketTypes from '../../hooks/api/useTicket';
 import useEnrollment from '../../hooks/api/useEnrollment';
 
-export default function Tickets() {
+export default function Tickets({ setUpdatePage }) {
   const [ticketSelected, setTicketSelected] = useState({});
   const [type, setType] = useState('');
   const [isRemote, setIsRemote] = useState(true);
@@ -61,10 +61,12 @@ export default function Tickets() {
   }
   async function sendTicket() {
     const newData = { ticketTypeId: ticketSelected.id };
+
     console.log(newData);
     try {
       await saveTicket(newData);
       toast('Informações salvas com sucesso!');
+      setUpdatePage(true);
     } catch (err) {
       toast('Não foi possível salvar suas informações!');
     }
@@ -144,7 +146,7 @@ const StyledTitleContainer = styled.div`
   align-items: center;
   text-align: center;
   h1 {
-    color: #8E8E8E;
+    color: #8e8e8e;
   }
 `;
 
