@@ -12,16 +12,16 @@ import Button from '../Form/Button';
 import useSavePayment from '../../hooks/api/useSavePayment';
 import usePayment from '../../hooks/api/usePayment';
 
-export default function CardInput() {
+export default function CardInput({ userTicket }) {
   const [cardLocate, setCardLocate] = useState('');
   const [paid, setPaid] = useState(false);
   const { savePaymentLoading, savePayment } = useSavePayment();
-  const { payment } = usePayment();
+  const { payment, getPayment } = usePayment();
 
   const { handleSubmit, handleChange, data } = useForm({
     onSubmit: async(data) => {
       const newData = {
-        ticketId: 3, //AQUI VAI O TICKET ID
+        ticketId: Number(localStorage.getItem('ticket')), //AQUI VAI O TICKET ID
         cardData: {
           issuer: Payment.fns.cardType(data.number),
           number: data.number,
@@ -45,10 +45,9 @@ export default function CardInput() {
   useEffect(async() => {
     if (payment) {
       setPaid(true);
-      console.log(payment);
     }
   }, [payment]);
-
+ 
   return (
     <>
       <TittlePayment>Pagamento</TittlePayment>

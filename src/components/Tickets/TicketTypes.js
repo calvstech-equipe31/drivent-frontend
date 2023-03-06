@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import useTicketTypes from '../../hooks/api/useTicket';
 import useEnrollment from '../../hooks/api/useEnrollment';
 
-export default function Tickets({ setUpdatePage }) {
+export default function Tickets({ setExistTicket }) {
   const [ticketSelected, setTicketSelected] = useState({});
   const [type, setType] = useState('');
   const [isRemote, setIsRemote] = useState(true);
@@ -23,8 +23,10 @@ export default function Tickets({ setUpdatePage }) {
 
   useEffect(() => {
     if (tickets) {
+      console.log(tickets);
       const ticketWithoutHotel = tickets.filter((e) => e.includesHotel === false);
       const presentialTicket = tickets.filter((e) => e.isRemote === false);
+      console.log(presentialTicket);
       const hotelPriceNegative = Number(presentialTicket[0].price) - Number(presentialTicket[1].price);
       const hotelPrice = Math.abs(hotelPriceNegative);
       setFilterTickets(ticketWithoutHotel);
@@ -64,9 +66,10 @@ export default function Tickets({ setUpdatePage }) {
 
     console.log(newData);
     try {
-      await saveTicket(newData);
+      const response = await saveTicket(newData);
+      localStorage.setItem('ticket', response.id);
+      setExistTicket(true);
       toast('Informações salvas com sucesso!');
-      setUpdatePage(true);
     } catch (err) {
       toast('Não foi possível salvar suas informações!');
     }
