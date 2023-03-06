@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import useTicketTypes from '../../hooks/api/useTicket';
 import useEnrollment from '../../hooks/api/useEnrollment';
 
-export default function Tickets({ setExistTicket }) {
-  const [ticketSelected, setTicketSelected] = useState({});
+export default function Tickets({ setExistTicket, ticketSelected, setTicketSelected }) {
   const [type, setType] = useState('');
   const [isRemote, setIsRemote] = useState(true);
   const [modality, setModality] = useState({});

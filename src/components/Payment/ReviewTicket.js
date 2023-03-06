@@ -1,13 +1,17 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { CONTAINER_REVIEWTICKET_COLOR, INFO_TICKET_COLOR, SUB_TITLE_COLOR, TOTAL_PRICE } from '../../constants/colors';
-export default function ReviewTicket() {
+export default function ReviewTicket({ ticketSelected }) {
+  console.log(ticketSelected, 'Aqui');
   return (
     <>
       <StyledSubTitle variant="h6">Ingresso escolhido</StyledSubTitle>
       <ContainerReviewTicket>
-        <InfoTicket variant="subtitle1">Presencial + Com Hotel</InfoTicket>
-        <TotalPrice variant="subtitle2">R$ 600</TotalPrice>
+        <InfoTicket variant="subtitle1">
+          {ticketSelected.name}
+          {ticketSelected.isRemote ? '' : ticketSelected.includesHotel ? ' + Com hotel' : ' + Sem hotel'}
+        </InfoTicket>
+        <TotalPrice variant="subtitle2">R$ {ticketSelected.price}</TotalPrice>
       </ContainerReviewTicket>
     </>
   );
@@ -27,6 +31,7 @@ const ContainerReviewTicket = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 12px;
+  margin-bottom: 20px;
 `;
 
 const InfoTicket = styled(Typography)`

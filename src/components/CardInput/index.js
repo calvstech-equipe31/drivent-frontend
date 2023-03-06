@@ -11,6 +11,7 @@ import Input from '../Form/Input';
 import Button from '../Form/Button';
 import useSavePayment from '../../hooks/api/useSavePayment';
 import usePayment from '../../hooks/api/usePayment';
+import ConfirmationPayment from '../../components/Payment/ConfirmationPayment';
 
 export default function CardInput({ userTicket }) {
   const [cardLocate, setCardLocate] = useState('');
@@ -47,13 +48,12 @@ export default function CardInput({ userTicket }) {
       setPaid(true);
     }
   }, [payment]);
- 
+
   return (
     <>
       <TittlePayment>Pagamento</TittlePayment>
-
       {paid ? (
-        'Aqui vai a parte de pagamento concluido'
+        <ConfirmationPayment />
       ) : (
         <FormCard onSubmit={handleSubmit}>
           <CardDiv>
