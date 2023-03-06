@@ -1,4 +1,5 @@
 import { Typography } from '@material-ui/core';
+import CardInput from '../../../components/CardInput';
 import Tickets from '../../../components/Tickets/TicketTypes.js';
 import styled from 'styled-components';
 import ConfirmationPayment from '../../../components/Payment/ConfirmationPayment';

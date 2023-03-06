@@ -1,21 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSaveTicket from '../../hooks/api/useSaveTicket';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import useTicketTypes from '../../hooks/api/useTicket';
+import useEnrollment from '../../hooks/api/useEnrollment';
 
 export default function Tickets() {
-  const [tickets, setTickets] = useState([
-    { id: 1, name: 'online', price: '100', isRemote: true },
-    { id: 2, name: 'presencial', price: '250', isRemote: false },
-  ]);
   const [ticketSelected, setTicketSelected] = useState({});
   const [type, setType] = useState('');
-  const [modality, setModality] = useState('');
+  const [isRemote, setIsRemote] = useState(true);
+  const [modality, setModality] = useState({});
   const [result, setResult] = useState(false);
   const [total, setTotal] = useState(0);
-  const [sum, setSum] = useState(0);
+  const [filterTickets, setFilterTickets] = useState([]);
+  const [filterTicketPresential, setFilterTicketPresential] = useState([]);
+  const [hotelPrice, setHotelPrice] = useState(0);
   const { saveTicketLoading, saveTicket } = useSaveTicket();
-  const hotelPrice = 350;
+  const { tickets } = useTicketTypes();
+  const { enrollment } = useEnrollment();
+
+  console.log(enrollment);
+
+  useEffect(() => {
+    if (tickets) {
+      const ticketWithoutHotel = tickets.filter((e) => e.includesHotel === false);
+      const presentialTicket = tickets.filter((e) => e.isRemote === false);
+      const hotelPriceNegative = Number(presentialTicket[0].price) - Number(presentialTicket[1].price);
+      const hotelPrice = Math.abs(hotelPriceNegative);
+      setFilterTickets(ticketWithoutHotel);
+      setFilterTicketPresential(presentialTicket);
+      setHotelPrice(hotelPrice);
+    }
+  }, [tickets]);
 
   function selectTicketType(ticket) {
     if (ticket.name === type) {
@@ -25,30 +41,27 @@ export default function Tickets() {
     if (ticket.isRemote) {
       setResult(true);
       setTotal(ticket.price);
+      setIsRemote(true);
     }
     if (!ticket.isRemote) {
-      setModality('');
+      setModality({});
       setResult(false);
-      setSum(ticket.price);
+      setIsRemote(false);
     }
     setType(ticket.name);
   }
 
-  function selectModality(modality) {
-    if (modality === 'hotel') {
-      setModality('hotel');
-      setTotal(Number(sum) + Number(hotelPrice));
-    }
-    if (modality === 'noHotel') {
-      setModality('noHotel');
-      setTotal(sum);
-    }
-    if (modality !== '') {
+  function selectModality(e) {
+    if (modality !== {}) {
       setResult(true);
     }
+    setModality(e);
+    setTotal(e.price);
+    setTicketSelected(e);
   }
   async function sendTicket() {
     const newData = { ticketTypeId: ticketSelected.id };
+    console.log(newData);
     try {
       await saveTicket(newData);
       toast('Informações salvas com sucesso!');
@@ -59,49 +72,111 @@ export default function Tickets() {
 
   return (
     <>
-      <h1>Primeiro, escolha sua modalidade de ingresso</h1>
-      {tickets?.map((e) => (
-        <TicketStyle className={ticketSelected === e ? 'selected' : ''} onClick={() => selectTicketType(e)}>
-          {e.name}
-          {e.price}
-        </TicketStyle>
-      ))}
-      {type === 'presencial' ? (
+      {enrollment ? (
         <>
-          <h1>Ótimo! Agora escolha sua modalidade de hospedagem</h1>
-          <TicketStyle className={modality === 'noHotel' ? 'selected' : ''} onClick={() => selectModality('noHotel')}>
-            Sem hotel
-          </TicketStyle>
-          <TicketStyle className={modality === 'hotel' ? 'selected' : ''} onClick={() => selectModality('hotel')}>
-            `Com hotel ${hotelPrice}`{' '}
-          </TicketStyle>
+          <StyledTitle>Primeiro, escolha sua modalidade de ingresso</StyledTitle>
+          <StyledTicketContainer>
+            {filterTickets?.map((e) => (
+              <TicketStyle
+                className={ticketSelected.name === e.name ? 'selected' : ''}
+                onClick={() => selectTicketType(e)}
+              >
+                <h1>{e.name}</h1>
+                <h2>R$ {e.price}</h2>
+              </TicketStyle>
+            ))}
+          </StyledTicketContainer>
+          {!isRemote ? (
+            <>
+              <StyledTitle>Ótimo! Agora escolha sua modalidade de hospedagem</StyledTitle>
+              <StyledTicketContainer>
+                {filterTicketPresential?.map((e) => (
+                  <TicketStyle className={modality === e ? 'selected' : ''} onClick={() => selectModality(e)}>
+                    {e.includesHotel ? (
+                      <>
+                        <h1>Com hotel</h1>
+                        <h2>+ R${hotelPrice}</h2>
+                      </>
+                    ) : (
+                      <h1>Sem hotel</h1>
+                    )}
+                  </TicketStyle>
+                ))}
+              </StyledTicketContainer>
+            </>
+          ) : (
+            ''
+          )}
+          {result ? (
+            <>
+              <StyledTitle>Fechado! O total ficou em R${total}. Agora é só confirmar</StyledTitle>
+              <Button onClick={() => sendTicket()}>Reservar ingresso</Button>{' '}
+            </>
+          ) : (
+            ''
+          )}
         </>
       ) : (
-        ''
-      )}
-      {result ? (
-        <>
-          `Fechado! O total ficou em ${total}. Agora é só confirmar`
-          <Button onClick={() => sendTicket()}>Reservar ingresso</Button>{' '}
-        </>
-      ) : (
-        ''
+        <StyledContainer>
+          <StyledTitleContainer>
+            <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</h1>
+          </StyledTitleContainer>
+        </StyledContainer>
       )}
     </>
   );
 }
 
+const StyledContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
+const StyledTitleContainer = styled.div`
+  height: 100%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  h1 {
+    color: #8E8E8E;
+  }
+`;
+
+const StyledTitle = styled.div`
+  margin-bottom: 10px;
+`;
+
 const TicketStyle = styled.div`
   width: 100px;
   height: 100px;
   border-radius: 20px;
+  border: 1px solid #cecece;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0 10px 10px 0;
   &.selected {
     background-color: #ffeed2;
   }
+  h1 {
+    color: black;
+    margin-bottom: 5px;
+  }
+  h2 {
+    color: #cecece;
+  }
+`;
+
+const StyledTicketContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const Button = styled.div`
