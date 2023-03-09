@@ -5,12 +5,14 @@ import Button from '../Form/Button';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
 import { toast } from 'react-toastify';
 import useSaveBooking from '../../hooks/api/useSaveBooking';
+import useBooking from '../../hooks/api/useBooking';
 
 export default function Rooms() {
   const [hotel, setHotel] = useState([]);
   const [roomAvailability, setRoomAvailability] = useState({});
   const [chosenRoom, setChosenRoom] = useState();
   const { hotelRooms, hotelRoomsLoading, gethotelRooms } = useHotelRooms();
+  const { booking, bookingLoading, bookingError } = useBooking();
   const { saveBooking, saveBookingLoading } = useSaveBooking();
 
   function selectRoom(roomId) {
@@ -47,6 +49,7 @@ export default function Rooms() {
   }
 
   async function bookingRoom() {
+    if(booking) return toast('Usuario ja possui um quarto!');
     if (!chosenRoom) return toast('Escolha um quarto!');
     try {
       const bodyRoomId = { roomId: chosenRoom };

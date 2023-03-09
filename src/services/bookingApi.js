@@ -9,3 +9,12 @@ export async function saveBooking(body, token) {
 
   return response.data;
 }
+
+export async function getBookingUser(token) {
+  const response = await api.get('/booking', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
