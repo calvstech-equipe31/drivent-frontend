@@ -1,18 +1,85 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OneRoom from './OneRoom';
 import Button from '../Form/Button';
+import useHotelRooms from '../../hooks/api/useHotelRooms';
 
 export default function Rooms() {
-  const lista = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+  const [hotel, setHotel] = useState([]);
+  const [roomAvailability, setRoomAvailability] = useState({});
+  const [chosenRoom, setChosenRoom] = useState();
+  const { hotelRooms, hotelRoomsLoading } = useHotelRooms();
 
+  function selectRoom(roomId) {
+    const room = roomAvailability[roomId];
+    console.log(roomAvailability);
+    if (roomId === chosenRoom || !room.includes('empty')) return;
+    
+    if (chosenRoom) {
+      const newRoomAvailability = { ...roomAvailability };
+      const oldRoom = roomAvailability[chosenRoom];
+      const oldRoomLastIndex = oldRoom.indexOf('chosen');
+      const newRoomlastIndex = room.lastIndexOf('empty');
+      oldRoom[oldRoomLastIndex] = 'empty';
+      room[newRoomlastIndex] = 'chosen';
+
+      newRoomAvailability[chosenRoom] = oldRoom;
+      newRoomAvailability[roomId] = room;
+
+      setChosenRoom(roomId);
+      setRoomAvailability(newRoomAvailability);
+    }
+    
+    if (!chosenRoom) {
+      const newRoomAvailability = { ...roomAvailability };
+      const lastIndex = room.lastIndexOf('empty');
+      
+      room[lastIndex] = 'chosen';
+      newRoomAvailability[roomId] = room;
+      
+      setChosenRoom(roomId);
+      setRoomAvailability(newRoomAvailability);
+    }
+    console.log(chosenRoom);
+  }
+
+  useEffect(() => {
+    if (hotelRooms) {
+      const allRooms = {};
+      hotelRooms.Rooms.forEach((element) => {
+        const personsBooking = Array.from({ length: element._count.Booking }, (_, i) => i + 1);
+        let listRoomAvailability = [];
+        for (let i = 1; i <= element.capacity; i++) {
+          if (i === personsBooking[i - 1]) {
+            listRoomAvailability.push('occupied');
+          }
+          if (i !== personsBooking[i - 1]) {
+            listRoomAvailability.push('empty');
+          }
+        }
+        allRooms[element.id] = listRoomAvailability;
+      });
+      setRoomAvailability(allRooms);
+      setHotel(hotelRooms);
+    }
+  }, [hotelRooms]);
+
+  console.log(roomAvailability);
   return (
     <>
       <Tittle>Ótima pedida! Agora escolha seu quarto:</Tittle>
       <AllRomns>
-        {lista.map((i) => (
-          <OneRoom roomName={i} />
-        ))}
+        {hotelRoomsLoading
+          ? 'sim'
+          : hotel.Rooms.map((r) => (
+            <OneRoom
+              key={r.id}
+              selectRoom={() => selectRoom(r.id)}
+              chosenRoom = {r.id === chosenRoom}
+              room={r}
+              roomAvailability={roomAvailability[r.id]}
+            />
+          ))}
       </AllRomns>
       <Button>RESERVAR QUARTO</Button>
     </>
