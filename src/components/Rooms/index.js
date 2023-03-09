@@ -49,6 +49,7 @@ export default function Rooms() {
   }
 
   async function bookingRoom() {
+    if(bookingLoading) toast('Ops! Ocorreu um erro. Tente novamente.');
     if(booking) return toast('Usuario ja possui um quarto!');
     if (!chosenRoom) return toast('Escolha um quarto!');
     try {
@@ -90,7 +91,7 @@ export default function Rooms() {
       <Tittle>Ótima pedida! Agora escolha seu quarto:</Tittle>
       <AllRomns>
         {hotelRoomsLoading
-          ? 'sim'
+          ? 'Aguardando...'
           : hotel.Rooms.map((r) => (
             <OneRoom
               key={r.id}
