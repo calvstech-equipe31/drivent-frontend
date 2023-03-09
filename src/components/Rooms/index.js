@@ -3,18 +3,21 @@ import styled from 'styled-components';
 import OneRoom from './OneRoom';
 import Button from '../Form/Button';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
+import { toast } from 'react-toastify';
+import useSaveBooking from '../../hooks/api/useSaveBooking';
 
 export default function Rooms() {
   const [hotel, setHotel] = useState([]);
   const [roomAvailability, setRoomAvailability] = useState({});
   const [chosenRoom, setChosenRoom] = useState();
   const { hotelRooms, hotelRoomsLoading } = useHotelRooms();
+  const { saveBooking, saveBookingLoading } = useSaveBooking();
 
   function selectRoom(roomId) {
     const room = roomAvailability[roomId];
     console.log(roomAvailability);
     if (roomId === chosenRoom || !room.includes('empty')) return;
-    
+
     if (chosenRoom) {
       const newRoomAvailability = { ...roomAvailability };
       const oldRoom = roomAvailability[chosenRoom];
@@ -29,18 +32,30 @@ export default function Rooms() {
       setChosenRoom(roomId);
       setRoomAvailability(newRoomAvailability);
     }
-    
+
     if (!chosenRoom) {
       const newRoomAvailability = { ...roomAvailability };
       const lastIndex = room.lastIndexOf('empty');
-      
+
       room[lastIndex] = 'chosen';
       newRoomAvailability[roomId] = room;
-      
+
       setChosenRoom(roomId);
       setRoomAvailability(newRoomAvailability);
     }
     console.log(chosenRoom);
+  }
+
+  async function bookingRoom() {
+    if (!chosenRoom) return toast('Escolha um quarto!');
+    try {
+      const bodyRoomId = { roomId: chosenRoom };
+      saveBooking(bodyRoomId);
+      toast('Tudo certo');
+    } catch (err) {
+      console.log(err.response);
+      toast('deu tudo erradoooooo');
+    }
   }
 
   useEffect(() => {
@@ -57,7 +72,7 @@ export default function Rooms() {
             listRoomAvailability.push('empty');
           }
         }
-        allRooms[element.id] = listRoomAvailability;
+        allRooms[element.id] = listRoomAvailability.reverse();
       });
       setRoomAvailability(allRooms);
       setHotel(hotelRooms);
@@ -75,13 +90,13 @@ export default function Rooms() {
             <OneRoom
               key={r.id}
               selectRoom={() => selectRoom(r.id)}
-              chosenRoom = {r.id === chosenRoom}
+              chosenRoom={r.id === chosenRoom}
               room={r}
               roomAvailability={roomAvailability[r.id]}
             />
           ))}
       </AllRomns>
-      <Button>RESERVAR QUARTO</Button>
+      <Button onClick={bookingRoom}>RESERVAR QUARTO</Button>
     </>
   );
 }
