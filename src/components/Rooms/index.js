@@ -10,7 +10,7 @@ export default function Rooms() {
   const [hotel, setHotel] = useState([]);
   const [roomAvailability, setRoomAvailability] = useState({});
   const [chosenRoom, setChosenRoom] = useState();
-  const { hotelRooms, hotelRoomsLoading } = useHotelRooms();
+  const { hotelRooms, hotelRoomsLoading, gethotelRooms } = useHotelRooms();
   const { saveBooking, saveBookingLoading } = useSaveBooking();
 
   function selectRoom(roomId) {
@@ -50,11 +50,13 @@ export default function Rooms() {
     if (!chosenRoom) return toast('Escolha um quarto!');
     try {
       const bodyRoomId = { roomId: chosenRoom };
-      saveBooking(bodyRoomId);
-      toast('Tudo certo');
+      await saveBooking(bodyRoomId);
+      setChosenRoom();
+      toast('Quarto reservado com sucesso!');
+      await gethotelRooms();
     } catch (err) {
       console.log(err.response);
-      toast('deu tudo erradoooooo');
+      toast('Não foi possivel completar sua reserva!');
     }
   }
 
