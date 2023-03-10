@@ -8,32 +8,23 @@ export default function ReviewBooking({ booking }) {
   const [roomBookings, setRoomBookings] = useState([]);
   const [numberOfBookings, setNumberOfBookings] = useState(0);
 
+  console.log(booking.Room.id);
+
   useEffect(async() => {
     if (bookings) {
+      console.log(bookings);
       setRoomBookings(bookings);
       setNumberOfBookings(bookings.length - 1);
     }
   }, [bookings]);
 
-  function typeQuarto() {
-    if(booking.Room.capacity==1) {
-      return 'Single';
-    }
-    if(booking.Room.capacity==2) {
-      return 'Double';
-    }
-    if(booking.Room.capacity==3) {
-      return 'Triple';
-    }
-  }
-
   return (
     <>
       {roomBookings.length !==0 ? (
         <>
-      Quarto reservado
-          {() => typeQuarto()}
-      Pessoas no seu quarto
+          <h1>Quarto reservado</h1>
+          {`${booking.id} (${booking.Room.name})`}
+          <h1>Pessoas no seu quarto</h1>
           {`Você e mais ${numberOfBookings}`}
         </>
       ) : (
