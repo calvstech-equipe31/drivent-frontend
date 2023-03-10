@@ -10,8 +10,8 @@ export default function Hotel() {
   const { getRoomBookings } = useRoomBookings();
   useEffect(() => {
     if (booking) {
-      getRoomBookings(booking.Room.roomId);
-      localStorage.setItem('room', `${booking.Room.roomId}`);
+      getRoomBookings(booking.Room.id);
+      localStorage.setItem('room', `${booking.Room.id}`);
       setExistBooking(true);
     }
   }, [booking, existBooking]);
