@@ -23,7 +23,7 @@ export default function Hotel() {
         </>
       ) : (
         <>
-          OLAA
+          <Rooms/>
         </>
       )}
     </>

@@ -25,7 +25,7 @@ export default function ReviewBooking({ booking }) {
           <h1>Quarto reservado</h1>
           {`${booking.id} (${booking.Room.name})`}
           <h1>Pessoas no seu quarto</h1>
-          {`Você e mais ${numberOfBookings}`}
+          {numberOfBookings==0 ? <> Somente você </> : <>{`Você e mais ${numberOfBookings}`}</> }
         </>
       ) : (
         <>
