@@ -22,18 +22,19 @@ export default function Hotel() {
   }, [booking, existBooking]);
   return (
     <>
-      <Container>
-        {booking ? (
-          <>
-            <Title>Você já escolheu seu quarto:</Title>
-            <ReviewBooking booking={booking}/>
-          </>
-        ) : (
-          <>
-            <Rooms/>
-          </>
-        )}
-      </Container>
+      <MainTittle>
+        Escolha de hotel e quarto
+      </MainTittle>
+      {booking ? (
+        <>
+          <Title>Você já escolheu seu quarto:</Title>
+          <ReviewBooking booking={booking}/>
+        </>
+      ) : (
+        <>
+          <Rooms/>
+        </>
+      )}
     </>
   );
 }
@@ -63,4 +64,10 @@ const Title = styled.div`
   line-height: 23px;
   color: #8E8E8E;
   margin-top: 36px;
+`;
+
+const MainTittle = styled.div`
+  font-size: 30px;
+  font-weight: 400;
+  margin-bottom: 10px;
 `;
