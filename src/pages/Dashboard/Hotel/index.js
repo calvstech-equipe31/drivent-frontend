@@ -5,36 +5,44 @@ import useRoomBookings from '../../../hooks/api/useRoomBookings';
 import useHotelRooms from '../../../hooks/api/useHotelRooms';
 import ReviewBooking from '../../../components/Booking/ReviewBooking.js';
 import styled from 'styled-components';
+import ListHotels from '../../../components/ListHotels';
 
 export default function Hotel() {
   const [existBooking, setExistBooking] = useState(false);
-  const { booking } = useBooking();
+  const [booking, setBooking] = useState();
+  const { getBooking } = useBooking();
   const { getRoomBookings } = useRoomBookings();
   const { gethotelRooms } = useHotelRooms();
-  useEffect(() => {
-    if (booking) {
-      getRoomBookings(booking.Room.id);
-      localStorage.setItem('room', `${booking.Room.id}`);
-      gethotelRooms(booking.Room.hotelId);
-      localStorage.setItem('hotel', `${booking.Room.hotelId}`);
+  useEffect(async() => {
+    const newBooking = await getBooking();
+    if (newBooking) {
+      console.log('EXiste booking no index do Hotel');
+      await getRoomBookings(newBooking.Room.id);
+      localStorage.setItem('room', `${newBooking.Room.id}`);
+      await gethotelRooms(newBooking.Room.hotelId);
+      localStorage.setItem('hotel', `${newBooking.Room.hotelId}`);
+      setBooking(newBooking);
       setExistBooking(true);
     }
-  }, [booking, existBooking]);
+    console.log('to passando pelo useEffe do Hotel');
+  }, [existBooking]);
   return (
     <>
-      <MainTittle>
+      <Container>
+        <MainTittle>
         Escolha de hotel e quarto
-      </MainTittle>
-      {booking ? (
-        <>
-          <Title>Você já escolheu seu quarto:</Title>
-          <ReviewBooking booking={booking}/>
-        </>
-      ) : (
-        <>
-          <Rooms/>
-        </>
-      )}
+        </MainTittle>
+        {booking ? (
+          <>
+            <Title>Você já escolheu seu quarto:</Title>
+            <ReviewBooking booking={booking}/>
+          </>
+        ) : (
+          <>
+            <ListHotels setExistBooking={setExistBooking} existBooking={existBooking}/>
+          </>
+        )}
+      </Container>
     </>
   );
 }
@@ -52,8 +60,7 @@ const Container = styled.div`
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
-    font-size: 34px;
-    line-height: 40px;
+    
     color: #000000;
 `;
 const Title = styled.div`
@@ -69,5 +76,8 @@ const Title = styled.div`
 const MainTittle = styled.div`
   font-size: 30px;
   font-weight: 400;
+  font-size: 34px;
+  line-height: 40px;
   margin-bottom: 10px;
 `;
+

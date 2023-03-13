@@ -2,6 +2,8 @@ import useAsync from '../useAsync';
 import useToken from '../useToken';
 
 import * as hotelApi from '../../services/hotelApi';
+import { useContext } from 'react';
+import HotelContext from '../../contexts/HotelContext';
 
 export default function useHotelRooms() {
   const token = useToken();
@@ -12,7 +14,7 @@ export default function useHotelRooms() {
     loading: hotelRoomsLoading,
     error: hotelRoomsError,
     act: gethotelRooms,
-  } = useAsync(() => hotelApi.getHotelWithRooms(token, hotel));
+  } = useAsync((data) => hotelApi.getHotelWithRooms(data, token), false);
 
   return {
     hotelRooms,
