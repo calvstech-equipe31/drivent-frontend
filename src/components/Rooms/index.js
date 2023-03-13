@@ -96,9 +96,6 @@ export default function Rooms() {
   console.log(roomAvailability);
   return (
     <>
-      <MainTittle>
-        Escolha de hotel e quarto
-      </MainTittle>
       { selectedHotel ? 
         <>
           <Tittle>Ótima pedida! Agora escolha seu quarto:</Tittle>
