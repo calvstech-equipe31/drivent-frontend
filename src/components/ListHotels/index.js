@@ -5,15 +5,11 @@ import useHotelRooms from '../../hooks/api/useHotelRooms';
 import useHotels from '../../hooks/api/useHotels';
 import Rooms from '../Rooms';
 
-export default function ListHotels() {
+export default function ListHotels({ existBooking, setExistBooking }) {
   const { selectHotel, setSelectHotel } = useContext(HotelContext);
-  const { gethotelRooms } = useHotelRooms();
   const { hotels } = useHotels();
   async function findHotel(id) {
-    localStorage.setItem('hotelId', `${id}`);
     setSelectHotel(id);
-    const oba = await gethotelRooms();
-    console.log(oba);
   }
   return (
     <>
@@ -37,7 +33,7 @@ export default function ListHotels() {
         )}
       </HotelContainer>
       {
-        selectHotel && <Rooms/>
+        selectHotel && <Rooms setExistBooking={setExistBooking} existBooking={existBooking}/>
       }      
     </>
   );
@@ -59,6 +55,7 @@ const HotelBox = styled.div`
   padding: 15px;
   border-radius: 10px;
   margin: 10px 20px 0 0;
+  cursor: pointer;
   img{
     width: 168px;
     height: 109px;

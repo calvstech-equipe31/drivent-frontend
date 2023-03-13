@@ -8,10 +8,10 @@ export default function ReviewBooking({ booking }) {
   const { bookings, getRoomBookings } = useRoomBookings();
   const [roomBookings, setRoomBookings] = useState([]);
   const [numberOfBookings, setNumberOfBookings] = useState(0);
-  const { hotelRooms, gethotelRooms } = useHotelRooms();
+  const { gethotelRooms } = useHotelRooms();
   const [hotel, setHotel] = useState(0);
 
-  console.log(booking.Room.id);
+  // console.log(booking.Room.id);
 
   useEffect(async() => {
     if (bookings) {
@@ -22,12 +22,15 @@ export default function ReviewBooking({ booking }) {
   }, [bookings]);
 
   useEffect(async() => {
+    const hotelId = localStorage.getItem('hotel');
+    const hotelRooms = await gethotelRooms(hotelId);
     if (hotelRooms) {
       console.log(hotelRooms);
       setHotel(hotelRooms);
     }
-  }, [hotelRooms]);
-
+  }, []);
+  console.log(hotel);
+  console.log(roomBookings);
   return (
     <>
       {roomBookings.length !==0 && hotel !==0 ? (

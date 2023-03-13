@@ -10,7 +10,7 @@ import useHotels from '../../hooks/api/useHotels';
 import ListHotels from '../ListHotels';
 import HotelContext from '../../contexts/HotelContext';
 
-export default function Rooms() {
+export default function Rooms({ existBooking, setExistBooking }) {
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [hotel, setHotel] = useState([]);
   const [roomAvailability, setRoomAvailability] = useState({});
@@ -64,7 +64,7 @@ export default function Rooms() {
       setChosenRoom();
       toast('Quarto reservado com sucesso!');
       setSelectHotel(hotel.id);
-      // await gethotelRooms(selectHotel);
+      setExistBooking(!existBooking);
     } catch (err) {
       console.log(err.response);
       toast('Não foi possivel completar sua reserva!');
