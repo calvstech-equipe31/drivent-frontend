@@ -23,7 +23,6 @@ export default function Hotel() {
   return (
     <>
       <Container>
-        Escolha de hotel e quarto
         {booking ? (
           <>
             <Title>Você já escolheu seu quarto:</Title>
@@ -31,7 +30,7 @@ export default function Hotel() {
           </>
         ) : (
           <>
-            ESCOLHA O QUARTO
+            <Rooms/>
           </>
         )}
       </Container>
