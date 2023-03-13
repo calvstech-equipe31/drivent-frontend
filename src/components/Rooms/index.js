@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OneRoom from './OneRoom';
 import Button from '../Form/Button';
@@ -7,20 +7,18 @@ import { toast } from 'react-toastify';
 import useSaveBooking from '../../hooks/api/useSaveBooking';
 import useBooking from '../../hooks/api/useBooking';
 import useHotels from '../../hooks/api/useHotels';
+import ListHotels from '../ListHotels';
+import HotelContext from '../../contexts/HotelContext';
 
 export default function Rooms() {
+  const [loadingRooms, setLoadingRooms] = useState(true);
   const [hotel, setHotel] = useState([]);
   const [roomAvailability, setRoomAvailability] = useState({});
   const [chosenRoom, setChosenRoom] = useState();
-  const [selectedHotel, setSelectedHotel] = useState(false);
-  const { hotelRooms, hotelRoomsLoading, gethotelRooms } = useHotelRooms();
+  const { selectHotel, setSelectHotel } = useContext(HotelContext);
+  const { gethotelRooms } = useHotelRooms();
   const { booking, bookingLoading, bookingError } = useBooking();
   const { saveBooking, saveBookingLoading } = useSaveBooking();
-  const { hotels } = useHotels();
-
-  function selectHotel(hotelId) {
-    console.log(hotelId);
-  }
 
   function selectRoom(roomId) {
     console.log(chosenRoom);
@@ -57,92 +55,70 @@ export default function Rooms() {
   }
 
   async function bookingRoom() {
-    if(bookingLoading) toast('Ops! Ocorreu um erro. Tente novamente.');
-    if(booking) return toast('Usuario ja possui um quarto!');
+    if (bookingLoading) toast('Ops! Ocorreu um erro. Tente novamente.');
+    if (booking) return toast('Usuario ja possui um quarto!');
     if (!chosenRoom) return toast('Escolha um quarto!');
     try {
       const bodyRoomId = { roomId: chosenRoom };
       await saveBooking(bodyRoomId);
       setChosenRoom();
       toast('Quarto reservado com sucesso!');
-      await gethotelRooms();
+      setSelectHotel(hotel.id);
+      // await gethotelRooms(selectHotel);
     } catch (err) {
       console.log(err.response);
       toast('Não foi possivel completar sua reserva!');
     }
   }
 
-  useEffect(() => {
-    if (hotelRooms) {
-      const allRooms = {};
-      hotelRooms.Rooms.forEach((element) => {
-        const personsBooking = Array.from({ length: element._count.Booking }, (_, i) => i + 1);
-        let listRoomAvailability = [];
-        for (let i = 1; i <= element.capacity; i++) {
-          if (i === personsBooking[i - 1]) {
-            listRoomAvailability.push('occupied');
+  useEffect(async() => {
+    try {
+      setLoadingRooms(true);
+      const hotelRooms = await gethotelRooms(selectHotel);
+      if(hotelRooms.id !== hotel.id) {
+        setChosenRoom();
+      }
+      if (hotelRooms) {
+        const allRooms = {};
+        hotelRooms.Rooms.forEach((element) => {
+          const personsBooking = Array.from({ length: element._count.Booking }, (_, i) => i + 1);
+          let listRoomAvailability = [];
+          for (let i = 1; i <= element.capacity; i++) {
+            if (i === personsBooking[i - 1]) {
+              listRoomAvailability.push('occupied');
+            }
+            if (i !== personsBooking[i - 1]) {
+              listRoomAvailability.push('empty');
+            }
           }
-          if (i !== personsBooking[i - 1]) {
-            listRoomAvailability.push('empty');
-          }
-        }
-        allRooms[element.id] = listRoomAvailability.reverse();
-      });
-      setRoomAvailability(allRooms);
-      setHotel(hotelRooms);
+          allRooms[element.id] = listRoomAvailability.reverse();
+        });
+        setRoomAvailability(allRooms);
+        setHotel(hotelRooms);
+        setLoadingRooms(false);
+      }
+    } catch { 
+      toast('Ops. Ocorreu um erro ao carregar os quartos. Por favor tente novamente mais tarde.');
     }
-  }, [hotelRooms]);
-
-  console.log(roomAvailability);
+  }, [selectHotel]);
+  
   return (
     <>
-      <MainTittle>
-        Escolha de hotel e quarto
-      </MainTittle>
-      { selectedHotel ? 
-        <>
-          <Tittle>Ótima pedida! Agora escolha seu quarto:</Tittle>
-          <AllRomns>
-            {hotelRoomsLoading
-              ? 'Aguardando...'
-              : hotel.Rooms.map((r) => (
-                <OneRoom
-                  key={r.id}
-                  selectRoom={() => selectRoom(r.id)}
-                  chosenRoom={r.id === chosenRoom}
-                  room={r}
-                  roomAvailability={roomAvailability[r.id]}
-                />
-              ))}
-          </AllRomns>
-          <Button onClick={bookingRoom}>RESERVAR QUARTO</Button>
-        </>
-        :
-        <>
-          <Tittle>
-            Primeiro, escolha seu hotel
-          </Tittle>
-          <HotelContainer>
-            {
-              hotels ?
-                hotels.map((hotel) => {
-                  return (
-                    <HotelBox onClick={() => selectHotel(hotel.id)}>
-                      <img src={hotel.image}/>
-                      <h1>{hotel.name}</h1>
-                      <h2>Tipos de acomodação:</h2>
-                      <h3>Bla, bla e bla</h3>
-                      <h2>Vagas disponíveis:</h2>
-                      <h3>xxx</h3>
-                    </HotelBox>
-                  );
-                })
-                :
-                <div></div>
-            }
-          </HotelContainer>
-        </>
-      }
+      <Tittle>Ótima pedida! Agora escolha seu quarto:</Tittle>
+      <AllRomns>
+        {loadingRooms
+          ? 'Aguardando...'
+          : hotel.Rooms.map((r) => (
+            <OneRoom
+              key={r.id}
+              selectRoom={() => selectRoom(r.id)}
+              chosenRoom={r.id === chosenRoom}
+              room={r}
+              roomAvailability={roomAvailability[r.id]}
+            />
+          ))}
+      </AllRomns>
+      <Button onClick={bookingRoom}>RESERVAR QUARTO</Button>
     </>
   );
 }
@@ -155,7 +131,7 @@ const HotelContainer = styled.div`
 `;
 
 const HotelBox = styled.div`
-  background-color: #EBEBEB;
+  background-color: #ebebeb;
   width: 190px;
   height: 230px;
   display: flex;
@@ -170,13 +146,13 @@ const HotelBox = styled.div`
     margin-top: 10px;
   }
   h2 {
-    color: #3C3C3C;
+    color: #3c3c3c;
     font-size: 12px;
     font-weight: 700;
     margin-top: 10px;
   }
   h3 {
-    color: #3C3C3C;
+    color: #3c3c3c;
     font-size: 12px;
     font-weight: 400;
   }
@@ -185,12 +161,6 @@ const HotelBox = styled.div`
 const Tittle = styled.h1`
   color: #8e8e8e;
   font-size: 20px;
-`;
-
-const MainTittle = styled.div`
-  font-size: 30px;
-  font-weight: 400;
-  margin-bottom: 10px;
 `;
 
 const AllRomns = styled.div`

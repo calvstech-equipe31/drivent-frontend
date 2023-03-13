@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import useBooking from '../../../hooks/api/useBooking';
 import useRoomBookings from '../../../hooks/api/useRoomBookings';
 import ReviewBooking from '../../../components/Booking/ReviewBooking.js';
+import styled from 'styled-components';
+import ListHotels from '../../../components/ListHotels';
 
 export default function Hotel() {
   const [existBooking, setExistBooking] = useState(false);
@@ -17,15 +19,26 @@ export default function Hotel() {
   }, [booking, existBooking]);
   return (
     <>
+      <MainTittle>
+        Escolha de hotel e quarto
+      </MainTittle>
+
       {booking ? (
         <>
-          <ReviewBooking booking={booking}/>
+          <ReviewBooking booking={booking} />
         </>
       ) : (
         <>
-          <Rooms/>
+          <ListHotels />
         </>
       )}
     </>
   );
 }
+
+const MainTittle = styled.div`
+  font-size: 30px;
+  font-weight: 400;
+  margin-bottom: 10px;
+`;
+
