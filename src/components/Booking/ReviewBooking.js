@@ -3,8 +3,9 @@ import useBooking from '../../hooks/api/useBooking';
 import useRoomBookings from '../../hooks/api/useRoomBookings';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
 import CardHotel from './CardHotel.js';
+import Button from '../Form/Button';
 
-export default function ReviewBooking({ booking }) {
+export default function ReviewBooking({ booking, setChangeRoom }) {
   const { bookings, getRoomBookings } = useRoomBookings();
   const [roomBookings, setRoomBookings] = useState([]);
   const [numberOfBookings, setNumberOfBookings] = useState(0);
@@ -19,13 +20,13 @@ export default function ReviewBooking({ booking }) {
       setRoomBookings(bookings);
       setNumberOfBookings(bookings.length - 1);
     }
-    if(booking.Room.capacity==1) {
+    if (booking.Room.capacity == 1) {
       setTypeRoom('Single');
     }
-    if(booking.Room.capacity==2) {
+    if (booking.Room.capacity == 2) {
       setTypeRoom('Double');
     }
-    if(booking.Room.capacity==3) {
+    if (booking.Room.capacity == 3) {
       setTypeRoom('Triple');
     }
   }, [bookings]);
@@ -42,23 +43,22 @@ export default function ReviewBooking({ booking }) {
   console.log(roomBookings);
   return (
     <>
-      {roomBookings.length !==0 && hotel !==0 ? (
+      {roomBookings.length !== 0 && hotel !== 0 ? (
         <>
           <CardHotel>
-            <img src={hotel.image} alt={hotel.name}/>
+            <img src={hotel.image} alt={hotel.name} />
             <div>
               <h2>{hotel.name}</h2>
               <h1>Quarto reservado</h1>
               <p>{`${booking.Room.name} (${typeRoom})`}</p>
               <h1>Pessoas no seu quarto</h1>
-              <p>{numberOfBookings==0 ? <> Somente você </> : <>{`Você e mais ${numberOfBookings}`}</> }</p>
+              <p>{numberOfBookings == 0 ? <> Somente você </> : <>{`Você e mais ${numberOfBookings}`}</>}</p>
             </div>
           </CardHotel>
+          <Button onClick={() => setChangeRoom(false)}>Troca de quarto</Button>
         </>
       ) : (
-        <>
-      Carregando
-        </>
+        <>Carregando</>
       )}
     </>
   );

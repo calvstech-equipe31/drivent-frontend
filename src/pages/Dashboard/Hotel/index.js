@@ -13,10 +13,11 @@ export default function Hotel() {
   const { getBooking } = useBooking();
   const { getRoomBookings } = useRoomBookings();
   const { gethotelRooms } = useHotelRooms();
+  const [changeRoom, setChangeRoom] = useState(true);
   useEffect(async() => {
     const newBooking = await getBooking();
     if (newBooking) {
-      console.log('EXiste booking no index do Hotel');
+      console.log('Existe booking no index do Hotel');
       await getRoomBookings(newBooking.Room.id);
       localStorage.setItem('room', `${newBooking.Room.id}`);
       await gethotelRooms(newBooking.Room.hotelId);
@@ -25,21 +26,21 @@ export default function Hotel() {
       setExistBooking(true);
     }
     console.log('to passando pelo useEffe do Hotel');
-  }, [existBooking]);
+  }, [existBooking, changeRoom]);
   return (
     <>
       <Container>
         <MainTittle>
         Escolha de hotel e quarto
         </MainTittle>
-        {booking ? (
+        {booking && changeRoom ? (
           <>
             <Title>Você já escolheu seu quarto:</Title>
-            <ReviewBooking booking={booking}/>
+            <ReviewBooking booking={booking} setChangeRoom={setChangeRoom}/>
           </>
         ) : (
           <>
-            <ListHotels setExistBooking={setExistBooking} existBooking={existBooking}/>
+            <ListHotels setExistBooking={setExistBooking} existBooking={existBooking} setChangeRoom={setChangeRoom}/>
           </>
         )}
       </Container>
