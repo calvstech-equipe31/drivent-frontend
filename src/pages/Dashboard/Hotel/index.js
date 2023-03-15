@@ -19,9 +19,9 @@ export default function Hotel() {
     if (newBooking) {
       console.log('Existe booking no index do Hotel');
       await getRoomBookings(newBooking.Room.id);
-      localStorage.setItem('room', `${newBooking.Room.id}`);
+      //localStorage.setItem('room', `${newBooking.Room.id}`);
       await gethotelRooms(newBooking.Room.hotelId);
-      localStorage.setItem('hotel', `${newBooking.Room.hotelId}`);
+      //localStorage.setItem('hotel', `${newBooking.Room.hotelId}`);
       setBooking(newBooking);
       setExistBooking(true);
     }
