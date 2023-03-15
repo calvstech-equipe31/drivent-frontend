@@ -4,14 +4,14 @@ import useToken from '../useToken';
 
 export default function useRoomBookings() {
   const token = useToken();
-  const room  = Number(localStorage.getItem('room'));
+  //const room  = Number(localStorage.getItem('room'));
   
   const {
     data: bookings,
     loading: bookingsLoading,
     error: bookingsError,
     act: getRoomBookings,
-  } = useAsync((data) => getRoomBookingsById(room, token));
+  } = useAsync((data) => getRoomBookingsById(data, token), false);
 
   return {
     bookings,
