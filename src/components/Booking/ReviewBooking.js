@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useBooking from '../../hooks/api/useBooking';
 import useRoomBookings from '../../hooks/api/useRoomBookings';
-import useHotelRooms from '../../hooks/api/useHotelRooms';
+//import useHotelRooms from '../../hooks/api/useHotelRooms';
 import CardHotel from './CardHotel.js';
 import Button from '../Form/Button';
 
@@ -9,8 +9,8 @@ export default function ReviewBooking({ booking, setChangeRoom }) {
   const { bookings, getRoomBookings } = useRoomBookings();
   const [roomBookings, setRoomBookings] = useState([]);
   const [numberOfBookings, setNumberOfBookings] = useState(0);
-  const { gethotelRooms } = useHotelRooms();
-  const [hotel, setHotel] = useState(0);
+  //const { gethotelRooms } = useHotelRooms();
+  //const [hotel, setHotel] = useState(0);
   const [typeRoom, setTypeRoom] = useState('');
   // console.log(booking.Room.id);
 
@@ -31,24 +31,23 @@ export default function ReviewBooking({ booking, setChangeRoom }) {
     }
   }, [bookings]);
 
-  useEffect(async() => {
+  /*useEffect(async() => {
     const hotelId = localStorage.getItem('hotel');
     const hotelRooms = await gethotelRooms(hotelId);
     if (hotelRooms) {
       console.log(hotelRooms);
       setHotel(hotelRooms);
     }
-  }, []);
-  console.log(hotel);
+  }, []);*/
   console.log(roomBookings);
   return (
     <>
-      {roomBookings.length !== 0 && hotel !== 0 ? (
+      {roomBookings.length !== 0 ? (
         <>
           <CardHotel>
-            <img src={hotel.image} alt={hotel.name} />
+            <img src={booking.Room.Hotel.image} alt={booking.Room.Hotel.name} />
             <div>
-              <h2>{hotel.name}</h2>
+              <h2>{booking.Room.Hotel.name}</h2>
               <h1>Quarto reservado</h1>
               <p>{`${booking.Room.name} (${typeRoom})`}</p>
               <h1>Pessoas no seu quarto</h1>
