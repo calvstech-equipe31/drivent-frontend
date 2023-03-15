@@ -9,8 +9,10 @@ import useBooking from '../../hooks/api/useBooking';
 import useHotels from '../../hooks/api/useHotels';
 import ListHotels from '../ListHotels';
 import HotelContext from '../../contexts/HotelContext';
+import axios from 'axios';
+import useToken from '../../hooks/useToken';
 
-export default function Rooms({ existBooking, setExistBooking }) {
+export default function Rooms({ existBooking, setExistBooking, setChangeRoom }) {
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [hotel, setHotel] = useState([]);
   const [roomAvailability, setRoomAvailability] = useState({});
@@ -19,7 +21,7 @@ export default function Rooms({ existBooking, setExistBooking }) {
   const { gethotelRooms } = useHotelRooms();
   const { booking, bookingLoading, bookingError } = useBooking();
   const { saveBooking, saveBookingLoading } = useSaveBooking();
-
+  const token = useToken();
   function selectRoom(roomId) {
     console.log(chosenRoom);
     const room = roomAvailability[roomId];
@@ -56,7 +58,14 @@ export default function Rooms({ existBooking, setExistBooking }) {
 
   async function bookingRoom() {
     if (bookingLoading) toast('Ops! Ocorreu um erro. Tente novamente.');
-    if (booking) return toast('Usuario ja possui um quarto!');
+    if (booking) { await axios.put(`http://localhost:4000/booking/${booking.id}`, { roomId: chosenRoom }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    setChangeRoom(true);
+    return;
+    }
     if (!chosenRoom) return toast('Escolha um quarto!');
     try {
       const bodyRoomId = { roomId: chosenRoom };
@@ -65,12 +74,12 @@ export default function Rooms({ existBooking, setExistBooking }) {
       toast('Quarto reservado com sucesso!');
       setSelectHotel(hotel.id);
       setExistBooking(!existBooking);
+      setChangeRoom(true);
     } catch (err) {
       console.log(err.response);
       toast('Não foi possivel completar sua reserva!');
     }
   }
-
   useEffect(async() => {
     try {
       setLoadingRooms(true);

@@ -5,11 +5,11 @@ import useHotelRooms from '../../hooks/api/useHotelRooms';
 import useHotels from '../../hooks/api/useHotels';
 import Rooms from '../Rooms';
 
-export default function ListHotels({ existBooking, setExistBooking }) {
+export default function ListHotels({ existBooking, setExistBooking, setChangeRoom }) {
   const { selectHotel, setSelectHotel } = useContext(HotelContext);
   const { hotels } = useHotels();
   async function findHotel(id) {
-    setSelectHotel(id);
+    await setSelectHotel(id);
   }
   return (
     <>
@@ -17,6 +17,7 @@ export default function ListHotels({ existBooking, setExistBooking }) {
       <HotelContainer>
         {hotels ? (
           hotels.map((hotel) => {
+            console.log(hotel, 'Hotel');
             return (
               <HotelBox onClick={async() => await findHotel(hotel.id)}>
                 <img src={hotel.image} />
@@ -32,9 +33,7 @@ export default function ListHotels({ existBooking, setExistBooking }) {
           <div></div>
         )}
       </HotelContainer>
-      {
-        selectHotel && <Rooms setExistBooking={setExistBooking} existBooking={existBooking}/>
-      }      
+      {selectHotel && <Rooms setExistBooking={setExistBooking} existBooking={existBooking} setChangeRoom={setChangeRoom} />}
     </>
   );
 }
@@ -56,7 +55,7 @@ const HotelBox = styled.div`
   border-radius: 10px;
   margin: 10px 20px 0 0;
   cursor: pointer;
-  img{
+  img {
     width: 168px;
     height: 109px;
     border-radius: 5px;
