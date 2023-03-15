@@ -7,7 +7,7 @@ import HotelContext from '../../contexts/HotelContext';
 
 export default function useHotelRooms() {
   const token = useToken();
-  const hotel  = Number(localStorage.getItem('hotel'));
+  //const hotel  = Number(localStorage.getItem('hotel'));
 
   const {
     data: hotelRooms,
