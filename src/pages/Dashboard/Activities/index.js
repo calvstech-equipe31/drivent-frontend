@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import PlaceActivities from '../../../components/ListActivities/PlaceActivities';
+import ListActivities from '../../../components/ListActivities/ListActivities';
 
 export default function Activities() {
   return (
     <Container>
-      <PlaceActivities />
+      <ListActivities />
     </Container>
   );
 }
