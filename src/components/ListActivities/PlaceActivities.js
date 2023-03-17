@@ -7,7 +7,7 @@ const nameActivity2 = 'Cursin de Java';
 const nameActivity3 = 'Infraestrutura com Docker';
 
 const time1 = 1;
-const time2 = 1;
+const time2 = 2;
 const time3 = 2;
 
 const horario1 = '09:00 - 10:00';

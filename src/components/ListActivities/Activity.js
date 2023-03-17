@@ -10,7 +10,6 @@ export default function Activity({ nameActivity, time, horario, isFull }) {
       </InfosActivity>
       <StatusActivity time={time} isFull={isFull}>
         {isFull ? <BiLogIn size={20} color="#078632" /> : <FiXCircle size={20} color="#CC6666"/>}
-        
         <span>27 vagas</span>
       </StatusActivity>
     </Container>
