@@ -5,7 +5,6 @@ import useDays from '../../hooks/api/useDays';
 export default function ListDays() {
   const { days } = useDays();
   const [daySelected, setDaySelected] = useState({});
-
   function selectDay(day) {
     if (day.id === daySelected.id) {
       return;
