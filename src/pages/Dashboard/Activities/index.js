@@ -2,6 +2,7 @@ import ListDays from '../../../components/Days';
 import styled from 'styled-components';
 import useTicketUser from '../../../hooks/api/useTicketUser';
 import { useState, useEffect } from 'react';
+import ListActivities from '../../../components/ListActivities/ListActivities';
 
 export default function Activities() {
   const { userTicket } = useTicketUser();
@@ -44,6 +45,7 @@ export default function Activities() {
             </StyledContainer>
           </>
         }
+        <ListActivities />
       </Container>
     </>
   );
