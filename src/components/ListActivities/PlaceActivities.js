@@ -12,7 +12,7 @@ export default function PlaceActivities({ daySelected }) {
   const { activity, getactivity }  = useActivity();
   const [activities, setActivities] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  console.log(loading);
   useEffect(async() => {
     const newActivity = await getactivity(); 
     setActivities(newActivity);
@@ -30,7 +30,7 @@ export default function PlaceActivities({ daySelected }) {
                   activities.map((a) => {
                     const full = a.Inscription.length !== a.Location.capacity;
                     if(a.localId === l.id && daySelected.id === a.dayId) {
-                      return <Activity nameActivity={a.name} startHour={a.startHour} endHour={a.endHour} time={a.duration} isFull={full} capacity={a.Location.capacity - a.Inscription.length} loading={loading} setLoading={setLoading}/>;
+                      return <Activity id={a.id} nameActivity={a.name} startHour={a.startHour} endHour={a.endHour} time={a.duration} isFull={full} capacity={a.Location.capacity - a.Inscription.length} loading={loading} setLoading={setLoading}/>;
                     }
                   })
                 ):('')}
