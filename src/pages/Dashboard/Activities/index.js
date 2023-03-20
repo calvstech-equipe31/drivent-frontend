@@ -16,8 +16,11 @@ export default function Activities() {
           ? 
           <>
             {userTicket.status === 'PAID' && userTicket.TicketType.isRemote == false 
-              ? 
-              <ListDays/> 
+              ?
+              <> 
+                <ListDays/>
+                <ListActivities />
+              </> 
               : 
               <>
                 {userTicket.status === 'RESERVED' 
@@ -45,7 +48,6 @@ export default function Activities() {
             </StyledContainer>
           </>
         }
-        <ListActivities />
       </Container>
     </>
   );
