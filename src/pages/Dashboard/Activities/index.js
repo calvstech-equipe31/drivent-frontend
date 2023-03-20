@@ -16,8 +16,11 @@ export default function Activities() {
           ? 
           <>
             {userTicket.status === 'PAID' && userTicket.TicketType.isRemote == false 
-              ? 
-              <ListDays/> 
+              ?
+              <> 
+                <ListDays/>
+                <ListActivities />
+              </> 
               : 
               <>
                 {userTicket.status === 'RESERVED' 
@@ -40,12 +43,11 @@ export default function Activities() {
           <>
             <StyledContainer>
               <StyledTitleContainer>
-                <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</h1>
+                <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de atividades</h1>
               </StyledTitleContainer>
             </StyledContainer>
           </>
         }
-        <ListActivities />
       </Container>
     </>
   );
