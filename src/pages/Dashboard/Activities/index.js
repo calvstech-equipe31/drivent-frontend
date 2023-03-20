@@ -21,7 +21,6 @@ export default function Activities() {
                 <ListDays daySelected={daySelected} setDaySelected={setDaySelected}/> 
                 <ListActivities daySelected={daySelected}/>
               </>
-              
               : 
               <>
                 {userTicket.status === 'RESERVED' 
@@ -44,12 +43,11 @@ export default function Activities() {
           <>
             <StyledContainer>
               <StyledTitleContainer>
-                <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</h1>
+                <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de atividades</h1>
               </StyledTitleContainer>
             </StyledContainer>
           </>
         }
-        
       </Container>
     </>
   );

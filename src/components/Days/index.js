@@ -24,7 +24,7 @@ export default function ListDays({ daySelected, setDaySelected }) {
                 onClick={() => selectDay(d)}
                 className={daySelected.id === d.id ? 'selected' : ''}
               >
-                <h1>{`${d.name}, ${dayFormated}`}</h1>
+                <h1>{`${d.name}, ${(d.date).substr(8, 2)}/${(d.date).substr(5, 2)}`}</h1>
               </DayBox>
             );
           })
