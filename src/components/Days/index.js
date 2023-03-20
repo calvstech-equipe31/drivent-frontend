@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useDays from '../../hooks/api/useDays';
+import dayjs from 'dayjs';
 
-export default function ListDays() {
+export default function ListDays({ daySelected, setDaySelected }) {
   const { days } = useDays();
-  const [daySelected, setDaySelected] = useState({});
+  
   function selectDay(day) {
     if (day.id === daySelected.id) {
       return;
@@ -17,12 +18,13 @@ export default function ListDays() {
       <DayContainer>
         {days ? (
           days.map((d) => {
+            const dayFormated = dayjs(d.date).format('DD/MM');
             return (
               <DayBox 
                 onClick={() => selectDay(d)}
                 className={daySelected.id === d.id ? 'selected' : ''}
               >
-                <h1>{`${d.name}, ${d.date}`}</h1>
+                <h1>{`${d.name}, ${dayFormated}`}</h1>
               </DayBox>
             );
           })

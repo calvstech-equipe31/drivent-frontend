@@ -1,43 +1,33 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import Activity from './Activity';
+import useLocations from '../../hooks/api/useLocations';
+import useActivity from '../../hooks/api/useActivity';
 
-const nameActivity1 = 'Montando Pc';
-const nameActivity2 = 'Cursin de Java';
-const nameActivity3 = 'Infraestrutura com Docker';
-
-const time1 = 1;
-const time2 = 2;
-const time3 = 2;
-
-const horario1 = '09:00 - 10:00';
-const horario2 = '09:00 - 10:00';
-const horario3 = '09:00 - 11:00';
-
-const full = false;
-
-export default function PlaceActivities() {
+export default function PlaceActivities({ daySelected }) {
+  const { locations } = useLocations();
+  const  { activity }  = useActivity();
+  console.log(activity);
   return (
     <>
-      <Place>
-        <TitleTypography>Auditório Principal</TitleTypography>
-        <ActivitiesGrid>
-          <Activity nameActivity={nameActivity1} time={time1} horario={horario1} isFull={!full}/>
-        </ActivitiesGrid>
-      </Place>
-      <Place>
-        <TitleTypography>Auditório Lateral</TitleTypography>
-        <ActivitiesGrid>
-          <Activity nameActivity={nameActivity2} time={time2} horario={horario2} isFull={!full}/>
-          <Activity nameActivity={nameActivity2} time={time2} horario={horario2} isFull={full}/>
-        </ActivitiesGrid>
-      </Place>
-      <Place>
-        <TitleTypography>Sala de Workshop</TitleTypography>
-        <ActivitiesGrid>
-          <Activity nameActivity={nameActivity3} time={time3} horario={horario3}isFull={!full}/>
-        </ActivitiesGrid>
-      </Place>
+      {locations ? (
+        locations.map((l, index) => {   
+          return (
+            <Place>
+              <TitleTypography key={index}>{l.name}</TitleTypography>
+              <ActivitiesGrid> 
+                {activity ? (
+                  activity.map((a) => {
+                    const full = a.Inscription.length !== a.Location.capacity;
+                    if(a.localId === l.id && daySelected.id === a.dayId) {
+                      return <Activity nameActivity={a.name} startHour={a.startHour} endHour={a.endHour} time={a.duration} isFull={full} capacity={a.Location.capacity - a.Inscription.length}/>;
+                    }
+                  })
+                ):('')}
+              </ActivitiesGrid>
+            </Place>);
+        } )
+      ):(<h1>sim</h1>)}
     </>
   );
 }
