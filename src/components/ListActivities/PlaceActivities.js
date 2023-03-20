@@ -3,11 +3,21 @@ import styled from 'styled-components';
 import Activity from './Activity';
 import useLocations from '../../hooks/api/useLocations';
 import useActivity from '../../hooks/api/useActivity';
+import useInscription from '../../hooks/api/useInscription';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 export default function PlaceActivities({ daySelected }) {
   const { locations } = useLocations();
-  const  { activity }  = useActivity();
-  console.log(activity);
+  const { activity, getactivity }  = useActivity();
+  const [activities, setActivities] = useState(false);
+  const [loading, setLoading] = useState(false);
+  console.log(loading);
+  useEffect(async() => {
+    const newActivity = await getactivity(); 
+    setActivities(newActivity);
+  }, [loading]);
+
   return (
     <>
       {locations ? (
@@ -16,11 +26,11 @@ export default function PlaceActivities({ daySelected }) {
             <Place>
               <TitleTypography key={index}>{l.name}</TitleTypography>
               <ActivitiesGrid> 
-                {activity ? (
-                  activity.map((a) => {
+                {activities ? (
+                  activities.map((a) => {
                     const full = a.Inscription.length !== a.Location.capacity;
                     if(a.localId === l.id && daySelected.id === a.dayId) {
-                      return <Activity nameActivity={a.name} startHour={a.startHour} endHour={a.endHour} time={a.duration} isFull={full} capacity={a.Location.capacity - a.Inscription.length}/>;
+                      return <Activity id={a.id} nameActivity={a.name} startHour={a.startHour} endHour={a.endHour} time={a.duration} isFull={full} capacity={a.Location.capacity - a.Inscription.length} loading={loading} setLoading={setLoading}/>;
                     }
                   })
                 ):('')}

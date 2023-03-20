@@ -1,14 +1,25 @@
 import { BiLogIn } from 'react-icons/bi';
 import { FiXCircle } from 'react-icons/fi';
 import styled from 'styled-components';
-export default function Activity({ nameActivity, time, startHour, endHour, isFull, capacity }) {
+import useInscription from '../../hooks/api/useInscription';
+import { toast } from 'react-toastify';
+export default function Activity({ id, nameActivity, time, startHour, endHour, isFull, capacity, loading, setLoading }) {
+  const { saveInscription } = useInscription();
+  async function register(activityId) {
+    try{
+      const teste = await saveInscription (activityId);
+      setLoading(!loading);
+    }catch(error) {
+      toast('Não foi possível se inscrever !');
+    }
+  }
   return (
     <Container time={time}>
       <InfosActivity time={time}>
         <p>{nameActivity}</p>
         <span>{startHour} - {endHour}</span>
       </InfosActivity>
-      <StatusActivity time={time} isFull={isFull}>
+      <StatusActivity time={time} isFull={isFull} onClick={() => register(id)}>
         {isFull ? <BiLogIn size={20} color="#078632" /> : <FiXCircle size={20} color="#CC6666"/>}
         <span>{capacity} vagas</span>
       </StatusActivity>
