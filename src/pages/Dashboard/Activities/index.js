@@ -6,7 +6,7 @@ import ListActivities from '../../../components/ListActivities/ListActivities';
 
 export default function Activities() {
   const { userTicket } = useTicketUser();
-  console.log(userTicket);
+  const [daySelected, setDaySelected] = useState({});
   
   return (
     <>
@@ -16,11 +16,11 @@ export default function Activities() {
           ? 
           <>
             {userTicket.status === 'PAID' && userTicket.TicketType.isRemote == false 
-              ?
-              <> 
-                <ListDays/>
-                <ListActivities />
-              </> 
+              ? 
+              <>
+                <ListDays daySelected={daySelected} setDaySelected={setDaySelected}/> 
+                <ListActivities daySelected={daySelected}/>
+              </>
               : 
               <>
                 {userTicket.status === 'RESERVED' 

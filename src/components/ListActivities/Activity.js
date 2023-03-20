@@ -1,16 +1,16 @@
 import { BiLogIn } from 'react-icons/bi';
 import { FiXCircle } from 'react-icons/fi';
 import styled from 'styled-components';
-export default function Activity({ nameActivity, time, horario, isFull }) {
+export default function Activity({ nameActivity, time, startHour, endHour, isFull, capacity }) {
   return (
     <Container time={time}>
       <InfosActivity time={time}>
         <p>{nameActivity}</p>
-        <span>{horario}</span>
+        <span>{startHour} - {endHour}</span>
       </InfosActivity>
       <StatusActivity time={time} isFull={isFull}>
         {isFull ? <BiLogIn size={20} color="#078632" /> : <FiXCircle size={20} color="#CC6666"/>}
-        <span>27 vagas</span>
+        <span>{capacity} vagas</span>
       </StatusActivity>
     </Container>
   );
